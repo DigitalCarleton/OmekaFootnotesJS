@@ -3,7 +3,7 @@ jQuery(window).load(function() {
     // Add classes to this menu and put the style declarations in style.css
     // -AM 2/10/17
     params = {
-      toolbar: "bold italic underline | alignleft aligncenter alignright | bullist numlist | link formatselect code | styleselect",
+      toolbar: "bold italic underline | alignleft aligncenter alignright | bullist numlist | link formatselect| styleselect | code ",
       style_formats: [{
           title: 'Highlight1 - gray w/bar',
           inline: 'span',
