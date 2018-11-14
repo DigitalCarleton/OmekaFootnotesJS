@@ -6,24 +6,24 @@ jQuery(window).load(function() {
       toolbar: "bold italic underline | alignleft aligncenter alignright | bullist numlist | link formatselect | styleselect | code ",
       style_formats: [{
           title: 'Highlight1 - gray w/bar',
-          inline: 'span',
+          block: 'p',
           classes: 'medium-block-1'
         }, {
           title: 'Highlight2 - white w/bar',
-          inline: 'span',
+          block: 'p',
           classes: 'medium-block-3'
         }, {
           title: 'Quote1 - double gray',
-          inline: 'span',
+          block: 'p',
           classes: 'medium-block-2'
         }, {
           title: 'Quote2 - single green',
-          inline: 'span',
+          block: 'p',
           classes: 'medium-block-4'
         }, {
           title: 'Pull quote',
-          inline: 'span',
-          classes: 'pull-quote'
+          block: 'p',
+          classes: 'pull-quote' 
         }, {
           title: 'Transcription',
           block: 'div',
