@@ -287,7 +287,6 @@ jQuery(document).ready(function() {
           var highestIndexLim = linkNodes.length;
           for(k = 1; k < highestIndexLim; k++){
             var extraChild = linkNodes.item(k);
-            alert(extraChild.getAttribute("href"));
             if(!(extraChild.getAttribute("href").includes("#fn:"))){
               paragraphChild.removeChild(extraChild);
             }
