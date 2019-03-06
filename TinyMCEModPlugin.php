@@ -24,8 +24,6 @@ class TinyMCEModPlugin extends Omeka_Plugin_AbstractPlugin
       }
 
       if($Record == 'Y') {
-        // Calls the footnote function file
-        queue_js_file('FootnoteFunctionLibrary');
         // Update the existing text boxes
         queue_js_file('TinyMCEMod');
         // Updates new text boxes added
