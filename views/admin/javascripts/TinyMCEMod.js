@@ -38,10 +38,10 @@ params = {
       title: 'Transcription',
       block: 'div',
       classes: 'transcription'
-    }, {
-      title: 'Transcription link',
-      selector: 'a',
-      classes: 'show-transcription'
+    // }, {
+    //   title: 'Transcription link',
+    //   selector: 'a',
+    //   classes: 'show-transcription'
     }],
   setup: function (editor) {
   editor.addButton('addFootnoteButton', {
@@ -89,23 +89,22 @@ params = {
           }
       }
     });
+    editor.addButton('addTranscriptionLinkButton', {
+        text: 'Add Show Transcription Link',
+        onclick: function () {
+            var tinymceBody = getTinyMCEDOMObject();
+            editor.insertContent("<p><a class='show-transcription' href='#'>Show Transcription</a></p>");
+      }
+    });
   },
 }
 
 function getTinyMCEDOMObject(){
-  //alert(tinymce.activeEditor.selection.getNode().parentNode.id.toString());
   var currentNode = tinymce.activeEditor.selection.getNode();
   while(!(currentNode.className.trim() === "mce-content-body")){
     currentNode = currentNode.parentNode;
   }
   return currentNode;
-  //tinymce.activeEditor.getContent({format: 'raw'});
-  // var id = tinyMCE.get(id);
-  // var iframe_id = "blocks-".concat(id.toString()).concat("-text_ifr");
-  // var iframe = document.getElementById(iframe_id);
-  // var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-  // var tinymceBody = innerDoc.getElementById('tinymce');
-  // return tinymceBody;
 }
 
 function addFootnoteLinkClassToFootnoteLinks(tinymceBody){
@@ -187,6 +186,8 @@ function getNumberOfFootnoteDivs(tinymceBody){
   return tinymceBody.getElementsByClassName("footnotes").length;
 }
 
+// Merge all the footnote divs by the ordered list of each footnote into the last footnote.
+// Then delete all but the last footnote div, which are now empty.
 function mergeFootnoteDivs(tinymceBody){
   var foonoteDivs = tinymceBody.getElementsByClassName("footnotes");
   var i;
@@ -197,27 +198,23 @@ function mergeFootnoteDivs(tinymceBody){
     deleteAllButOneFootnoteDiv(tinymceBody, foonoteDivs);
 }
 
-  function moveOlsFromOneFnDivToAnotherStackingUpwards(listReceiver, listGiver){
-    var child = listGiver.lastChild;
-    var nextChild;
-    while (child) {
-      nextChild = child.previousSibling;
-      listReceiver.insertBefore(child, listReceiver.firstChild);
-      child = nextChild;
-    }
+function moveOlsFromOneFnDivToAnotherStackingUpwards(listReceiver, listGiver){
+  var child = listGiver.lastChild;
+  var nextChild;
+  while (child) {
+    nextChild = child.previousSibling;
+    listReceiver.insertBefore(child, listReceiver.firstChild);
+    child = nextChild;
   }
+}
 
-  function deleteAllButOneFootnoteDiv(tinymceBody, foonoteDivs){
-    var i;
-    while(foonoteDivs.length > 1){
-      var childFnDivToRemove = foonoteDivs.item(0);
-      tinymceBody.removeChild(childFnDivToRemove);
-    }
+function deleteAllButOneFootnoteDiv(tinymceBody, foonoteDivs){
+  var i;
+  while(foonoteDivs.length > 1){
+    var childFnDivToRemove = foonoteDivs.item(0);
+    tinymceBody.removeChild(childFnDivToRemove);
   }
-
-//function containsFootnoteCitations(tinymceBody){
-  //return tinymceBody.getElementsByClassName("footnotes").length == 1;
-//}
+}
 
 function addNewFootnoteLink(editor, fnNextNum){
   var linkHTML = getLinkHTML(fnNextNum);
