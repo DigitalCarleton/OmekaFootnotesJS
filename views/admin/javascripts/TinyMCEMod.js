@@ -43,11 +43,12 @@ jQuery(document).ready(function() {
           onclick: function () {
             // Add the new footnote link
         		var tinymceBody = getTinyMCEDOMObject();
+            addFootnoteLinkClassToFootnoteLinks(tinymceBody);
         		var fnNextNum = getNumberOfExistingFootnotes(tinymceBody) + 1;
         		addNewFootnoteLink(editor, fnNextNum);
         		var tinymceBody = getTinyMCEDOMObject();
         		// Add the new footnote citation
-        		if(containsFootnoteCitations(tinymceBody) == false){
+        		if(getNumberOfFootnoteDivs(tinymceBody) == 0){
         			addFootnoteDiv(tinymceBody);
         		}
         		addFootnoteCitation(tinymceBody, fnNextNum);
@@ -60,12 +61,15 @@ jQuery(document).ready(function() {
           text: 'Update Footnotes',
           onclick: function () {
               var tinymceBody = getTinyMCEDOMObject();
+              addFootnoteLinkClassToFootnoteLinks(tinymceBody);
           		var numOfFns = getNumberOfExistingFootnotes(tinymceBody);
           		if(numOfFns > 0){
-            			// Check formatting of footnote links to make sure they're OK
-            			if(containsFootnoteCitations(tinymceBody) == false){
-            				addFootnoteDiv(tinymceBody);
-            			}
+                  // Check formatting of footnote links to make sure they're OK
+                  if(getNumberOfFootnoteDivs(tinymceBody) == 0){
+                    addFootnoteDiv(tinymceBody);
+                  } else if (getNumberOfFootnoteDivs(tinymceBody) > 1){
+                    mergeFootnoteDivs(tinymceBody);
+                  }
             			correctFootnoteLinkFormatting(tinymceBody, editor);
             			var numOfFns = getNumberOfExistingFootnotes(tinymceBody);
             			correctFootnoteCitationFormatting(tinymceBody, numOfFns, editor)
@@ -96,6 +100,16 @@ jQuery(document).ready(function() {
       // return tinymceBody;
     }
 
+    function addFootnoteLinkClassToFootnoteLinks(tinymceBody){
+    	  var i = 0;
+    	  var supElements = tinymceBody.getElementsByTagName("sup");
+    	  for(i = 0; i < supElements.length; i++){
+    	  	var sup = supElements[i];
+    	  	if(sup.id.includes('fnref')){}
+    			sup.className = "footnote link";
+    	  }
+    }
+
     function getNumberOfExistingFootnotes(tinymceBody){
       return tinymceBody.getElementsByClassName("footnote link").length;
     }
@@ -120,7 +134,7 @@ jQuery(document).ready(function() {
       var list = document.createElement("li");
       var id = 'fn:';
       id = id.concat(fnNextNum.toString());
-      list.classList.add("footnoteLink");
+      list.classList.add("footnote");
       list.setAttribute("id", id);
       return list;
     }
@@ -160,9 +174,41 @@ jQuery(document).ready(function() {
       return footnoteDiv;
     }
 
-    function containsFootnoteCitations(tinymceBody){
-      return tinymceBody.getElementsByClassName("footnotes").length == 1;
+    function getNumberOfFootnoteDivs(tinymceBody){
+      return tinymceBody.getElementsByClassName("footnotes").length;
     }
+
+  	function mergeFootnoteDivs(tinymceBody){
+  	  var foonoteDivs = tinymceBody.getElementsByClassName("footnotes");
+  	  var i;
+        var indexOfLastFnDiv = foonoteDivs.length - 1;
+        for(i = 0; i < indexOfLastFnDiv; i++){
+          moveOlsFromOneFnDivToAnotherStackingUpwards(foonoteDivs.item(indexOfLastFnDiv), foonoteDivs.item(i));
+        }
+        deleteAllButOneFootnoteDiv(tinymceBody, foonoteDivs);
+  	}
+
+      function moveOlsFromOneFnDivToAnotherStackingUpwards(listReceiver, listGiver){
+        var child = listGiver.lastChild;
+        var nextChild;
+        while (child) {
+          nextChild = child.previousSibling;
+          listReceiver.insertBefore(child, listReceiver.firstChild);
+          child = nextChild;
+        }
+      }
+
+      function deleteAllButOneFootnoteDiv(tinymceBody, foonoteDivs){
+        var i;
+        while(foonoteDivs.length > 1){
+          var childFnDivToRemove = foonoteDivs.item(0);
+          tinymceBody.removeChild(childFnDivToRemove);
+        }
+      }
+
+    //function containsFootnoteCitations(tinymceBody){
+      //return tinymceBody.getElementsByClassName("footnotes").length == 1;
+    //}
 
     function addNewFootnoteLink(editor, fnNextNum){
       var linkHTML = getLinkHTML(fnNextNum);
