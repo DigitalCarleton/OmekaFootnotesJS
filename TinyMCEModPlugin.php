@@ -27,7 +27,7 @@ class TinyMCEModPlugin extends Omeka_Plugin_AbstractPlugin
         // Update the existing text boxes
         queue_js_file('TinyMCEMod');
         // Updates new text boxes added
-        queue_js_file('TinyMCEModAfter');
+        //queue_js_file('TinyMCEModAfter');
       }
     }
 
