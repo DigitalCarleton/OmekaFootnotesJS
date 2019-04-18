@@ -1,4 +1,4 @@
-jQuery(document).ready(function() {
+jQuery(window).load(function() {
     // This block adds custom styles to the text edit form on exhibit pages.
     // Add classes to this menu and put the style declarations in style.css
     // -AM 2/10/17
