@@ -12,7 +12,7 @@ jQuery(window).load(function() {
 params = {
   toolbar: [
     "bold italic underline | alignleft aligncenter alignright | bullist numlist | link formatselect | styleselect | code ",
-    "addFootnoteButton | updateFootnotesButton"
+    "addFootnoteButton | updateFootnotesButton | addTranscriptionLinkButton"
 ],
   style_formats: [{
       title: 'Highlight1 - gray w/bar',
@@ -90,7 +90,7 @@ params = {
       }
     });
     editor.addButton('addTranscriptionLinkButton', {
-        text: 'Add Show Transcription Link',
+        text: 'Add Transcription Link',
         onclick: function () {
             var tinymceBody = getTinyMCEDOMObject();
             editor.insertContent("<p><a class='show-transcription' href='#'>Show Transcription</a></p>");
