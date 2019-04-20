@@ -282,13 +282,10 @@ function getListOfCitationIDs(assignedLinkNums, n){
   for(j = 0; j < extraNums.length; j++){
     citationIDAssignments.push(extraNums[j]);
   }
-  alert(assignedLinkNums.toString());
-  alert(citationIDAssignments.toString());
   return citationIDAssignments;
 }
 
 function assignIDsToCitations(fnCitations, citIDs){
-  alert(citIDs.toString());
   for (i = 0; i < fnCitations.length; i++) {
     var fnCitation = fnCitations.item(i);
     var newID = citIDs[i].toString();
