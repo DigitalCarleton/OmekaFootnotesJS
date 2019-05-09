@@ -341,9 +341,6 @@ function correctFootnoteCitationsOrder(tinymceBody, currentLinkIDs){
   var i = 1;
   var fnCitations = footnoteDiv.getElementsByTagName("li");
   var citationIDs = getFnCitationIDs(fnCitations);
-  // var newFnCitationIDs = getNewCitationIDs(currentLinkIDs, fnCitationIDs);
-  // assignIDsToCitations(fnCitations, citIDs);
-  // sortFootnoteCitationsBasedOnIDs(footnoteDiv, fnCitations, newFnCitationIDs);
   newSortFootnoteCitationsBasedOnIDs(footnoteDiv, fnCitations, currentLinkIDs, citationIDs);
   assignLinkIDsInIncreasingOrder(tinymceBody);
   assignFootnoteIDsInIncreasingOrder(fnCitations);
