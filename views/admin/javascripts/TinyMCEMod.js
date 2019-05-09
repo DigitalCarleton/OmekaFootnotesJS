@@ -140,7 +140,6 @@ function updateFootnotes(){
         mergeFootnoteDivs(tinymceBody);
       }
       var currentLinkIDs = getCurrentLinkIDs(tinymceBody);
-      // alert("currentLinkIDs".concat(currentLinkIDs.toString()));
       correctFootnoteLinkFormatting(tinymceBody);
       var numOfFns = getNumberOfExistingFootnotes(tinymceBody);
       correctFootnoteCitationFormatting(tinymceBody, numOfFns)
@@ -351,40 +350,29 @@ function correctFootnoteCitationsOrder(tinymceBody, currentLinkIDs){
 }
 
 function newSortFootnoteCitationsBasedOnIDs(footnoteDiv, fnCitations, linkIDs, citationIDs){
-  // alert(linkIDs.toString());
-  // alert(citationIDs.toString());
   var fnCitationIDMap = getCitationIDMap(fnCitations, citationIDs);
-  // alert("fnCitationIDMap KEYS: ".concat(Object.keys(fnCitationIDMap).toString()));
   var originalOL = footnoteDiv.getElementsByTagName('ol').item(0);
   var newOL = originalOL.cloneNode(false); //an empty clone; has no children
   for(var i = 0; i < linkIDs.length; i++){
     linkID = linkIDs[i];
     //If (ID in CitationIDs), NewFootnoteList.append(CitationsByID[ID])
     if(linkIDInCitationIDs(citationIDs, linkID)){
-      // alert(linkID.toString().concat(" in"));
       fnCitClone = cloneCitationByID(fnCitationIDMap, linkID);
       newOL.appendChild(fnCitClone);
-      // alert("OLD".concat(fnCitClone.innerHTML.toString()));
     }
     //Else, NewFootnoteList.append(empty_citation)
     else {
-      // alert(linkID.toString().concat(" out"));
       var newCitation = getNewFootnoteListItem(linkID);
       newOL.appendChild(newCitation);
-      // alert("NEW".concat(newCitation.innerHTML.toString()));
     }
-    // alert("len: ".concat(newOL.childNodes.length.toString()));
   }
   //For each citID in CitationIDs not in LinkIDs, NewFootnoteList.append(citations[citID])
   for(var i = 0; i < citationIDs.length; i++){
     citID = citationIDs[i];
     if(citIDinLinkIDs(linkIDs, citID) == false){
-      // alert("cit out: ".concat(citID.toString()));
       fnCitClone = cloneCitationByID(fnCitationIDMap, citID);
       newOL.appendChild(fnCitClone);
-      // alert("MISSING".concat(fnCitClone.innerHTML.toString()));
     }
-    // alert("len: ".concat(newOL.childNodes.length.toString()));
   }
   footnoteDiv.removeChild(originalOL);
   footnoteDiv.appendChild(newOL);
@@ -421,40 +409,6 @@ function getCitationIDMap(fnCitations){
   return citationIDMap;
 }
 
-// Number are assigned as such. If the first footnote in the text is 3, then the third citation should be given the index 1.
-// Therefore, for every footnote #, we look for its index in the list of footnote #s. We then assign that index to the citation.
-// function getNewCitationIDs(currentLinkIDs, originalCitIDs){
-//   citationIDAssignments = [];
-//   sortedLinkIDs = sortLinkIDS(currentLinkIDs);
-//   // alert("AssignedLinksNums 2!".concat(currentLinkIDs.toString()));
-//   for(i = 0; i < currentLinkIDs.length; i++){
-//     var linkID = sortedLinkIDs[i];
-//     orderLinkNumAppears = currentLinkIDs.indexOf(linkID.toString()) + 1;
-//     // alert(linkID.toString().concat(":").concat(orderLinkNumAppears.toString()).concat("---").concat(currentLinkIDs.toString()));
-//     citationIDAssignments.push(orderLinkNumAppears.toString());
-//   }
-//   var finalAssignments = [];
-//   var k = 0
-//   var max = Math.max.apply(null, citationIDAssignments) + 1;
-//   // alert("length: citIds: ".concat(originalCitIDs.length));
-//   for(j = 0; j < originalCitIDs.length; j++){
-//     //if there is an ID in citations ID that is not in currentLinkIDs;
-//     //plug the missing holes so that every citation is successfully reordered
-//     var citationID = originalCitIDs[j];
-//     if(currentLinkIDs.indexOf(citationID.toString()) == -1){
-//       // alert('nope: '.concat(citationID.toString()).concat(", ").concat(currentLinkIDs.toString()));
-//       finalAssignments.push(max.toString());
-//       max = max + 1;
-//     } else {
-//       // alert('yep: '.concat(citationID.toString()).concat(", ").concat(currentLinkIDs.toString()));
-//       finalAssignments.push(citationIDAssignments[k])
-//       k = k + 1;
-//     }
-//   }
-//   // alert("final".concat(finalAssignments.toString()));
-//   return finalAssignments;
-// }
-
 function sortLinkIDS(currentLinkIDs){
   sortedLinkIDs = []
   for(x = 0; x < currentLinkIDs.length; x++){
@@ -482,7 +436,6 @@ function assignLinkIDsInIncreasingOrder(tinymceBody){
       var hrefLink = fnLink.getElementsByTagName("a").item(0);
       hrefLink.setAttribute("href", "#fn:".concat(i));
       hrefLink.setAttribute("data-mce-href", "#fn:".concat(i));
-      // alert("#fn:".concat(i.toString()));
   }
 }
 
@@ -492,41 +445,6 @@ function assignFootnoteIDsInIncreasingOrder(fnCitations){
       updateFootnoteCitationID(fnCitation, i);
   }
 }
-
-// function assignIDsToCitations(fnCitations, citIDs){
-//   for (i = 0; i < fnCitations.length; i++) {
-//     var fnCitation = fnCitations.item(i);
-//     var newID = citIDs[i].toString();
-//     fnCitation.id = "fn:".concat(newID);
-//     var hrefLink = fnCitation.getElementsByTagName("a").item(0);
-//     hrefLink.setAttribute("href", hrefLink.getAttribute("href").substring(0, 7).concat(newID));
-//   }
-// }
-
-// function sortFootnoteCitationsBasedOnIDs(footnoteDiv, fnCitations, citIDs){
-//   var orderedList = footnoteDiv.getElementsByTagName('ol').item(0);
-//   var cloneOL = orderedList.cloneNode(false); //an empty clone; has no children
-//   // alert("START!");
-//   // alert("citIDS:".concat(citIDs.toString()));
-//   var sortedCitIDs = [];
-//   for(x = 0; x < citIDs.length; x++){
-//     sortedCitIDs.push(citIDs[x]);
-//   }
-//   sortedCitIDs.sort();
-//   for(var i = 0; i < fnCitations.length; i++){
-//     j = sortedCitIDs[i] //in the case that a footnote citation is deleted,
-//       //we should only use the existing footnote link ids. This is what citIDs holds
-//     // alert("j: ".concat(j.toString()));
-//     var indexOfCitWithIDi = citIDs.indexOf(j.toString());
-//     // alert(indexOfCitWithIDi.toString());
-//     childToMove = fnCitations[indexOfCitWithIDi];
-//     // alert(childToMove.innerHTML.toString());
-//     var cloneChild = childToMove.cloneNode(true);
-//     cloneOL.appendChild(cloneChild);
-//   }
-//   footnoteDiv.removeChild(orderedList);
-//   footnoteDiv.appendChild(cloneOL);
-// }
 
 function correctFootnoteLinkFormatting(tinymceBody){
   var fnLinks = tinymceBody.getElementsByClassName("footnote link");
