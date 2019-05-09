@@ -615,8 +615,6 @@ function ensureParagraphElementInCitation(fnCitation){
 
 function addNewParagraphElementToFootnoteCitation(fnCitation){
   var newParagraph = getNewParagraphElement();
-  alert("textcontent: ".concat(fnCitation.textContent.toString()));
-  alert("innerHTML: ".concat(fnCitation.innerHTML.toString()));
   if(fnCitation.textContent != ""){
     moveTextContentToNewParagraph(fnCitation, newParagraph);
     moveLinkWithinParagraphIfExists(fnCitation, newParagraph);
