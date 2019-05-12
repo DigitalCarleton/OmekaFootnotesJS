@@ -499,9 +499,14 @@ function updateLinkID(fnLink, newID){
 function updateCitationID(fnCitation, newID){
   newID = newID.toString();
   fnCitation.id = "fn:".concat(newID);
-  var hrefLink = fnCitation.getElementsByTagName("a").item(0);
-  hrefLink.setAttribute("href", "#fnref:".concat(newID));
-  hrefLink.setAttribute("data-mce-href", "#fnref:".concat(newID));
+  var linkNodes = fnCitation.getElementsByTagName("a");
+  for(var i = 0; i < linkNodes.length; i++){
+    var linkChild = linkNodes[i];
+    if(linkChild.getAttribute("href").includes("#fnref:")){
+      linkChild.setAttribute("href", "#fnref:".concat(newID));
+      linkChild.setAttribute("data-mce-href", "#fnref:".concat(newID));
+    }
+  }
 }
 
 function getFnCitationID(fnCitation){
@@ -614,26 +619,22 @@ function correctFootnoteCitationFormatting(tinymceBody, numOfFns){
     var linkNodes = fnCitation.getElementsByTagName("a");
     ensureParagraphElementInCitation(fnCitation);
     // If multiple links are on the same line, we eliminate the extras
-    if(linkNodes.length > 1){
-      var k;
-      var paragraphChild = fnCitation.childNodes.item(0);
-      var highestIndexLim = linkNodes.length;
-      for(k = 1; k < highestIndexLim; k++){
-        var extraChild = linkNodes.item(k);
-        if(!(extraChild.getAttribute("href").includes("#fn:"))){
-          paragraphChild.removeChild(extraChild);
+    var k;
+    var paragraphChild = fnCitation.childNodes.item(0);
+    var citID = getFnCitationID(fnCitation);
+    var citationLinkNodes = [];
+    if(linkNodes.length > 0){
+      for(k = linkNodes.length - 1; k >= 0; k = k - 1){
+        var linkChild = linkNodes.item(k);
+        if(linkChild.getAttribute("href").includes("#fnref:")){
+          paragraphChild.removeChild(linkChild);
         }
       }
-    // If there are no links, we create a new one
-    } else if(linkNodes.length == 0) {
-      var newLinkNode = getNewLinkElement(i + 1);
-      var fnCitationParagraph = fnCitation.getElementsByTagName("p").item(0);
-      fnCitationParagraph.appendChild(newLinkNode);
-    // If there is a link, check its text content
-    } else {
-      var linkNode = linkNodes.item(0);
-      linkNode.textContent = "↩";
     }
+    var newLinkNode = getNewLinkElement(i + 1);
+    var fnCitationParagraph = fnCitation.getElementsByTagName("p").item(0);
+    fnCitationParagraph.appendChild(newLinkNode);
+    // If there is a link, check its text content
   }
   createCitationsToMatchNumOfLinks(fnCitations, footnoteDiv, numOfFns)
 }
