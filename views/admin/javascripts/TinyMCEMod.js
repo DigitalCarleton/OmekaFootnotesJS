@@ -53,7 +53,7 @@ params = {
         var tinymceBody = getTinyMCEDOMObject();
         addFootnoteLinkClassToFootnoteLinks(tinymceBody);
         updateFootnotes();
-        var fnNextNum = getNumberOfExistingLinks(tinymceBody) + 1;
+        var fnNextNum = getFnNextNum(tinymceBody);
         addNewFootnoteLink(editor, fnNextNum);
         var tinymceBody = getTinyMCEDOMObject();
         // Add the new footnote citation
@@ -64,7 +64,7 @@ params = {
         // Move cursor to bottom of the editor
         tinyMCE.activeEditor.selection.select(tinyMCE.activeEditor.getBody(), true);
         tinyMCE.activeEditor.selection.collapse(false);
-        updateFootnotes();
+        //updateFootnotes();
       }
     });
   editor.addButton('updateFootnotesButton', {
@@ -236,6 +236,17 @@ function getNumberOfExistingCitations(tinymceBody){
   }
   var fnCitations = footnoteDiv.getElementsByTagName("li");
   return fnCitations.length;
+}
+
+function getFnNextNum(tinymceBody){
+  var allTinymceBodies = getAllTinyMCETextBodies();
+  tinymceBodyIndex = allTinymceBodies.indexOf(tinymceBody);
+  var numOfPreviousCits = 0;
+  for(var i = 0; i <= tinymceBodyIndex; i++){
+    numOfPreviousCits = numOfPreviousCits + getNumberOfExistingCitations(allTinymceBodies[i]);
+  }
+  var fnNextNum = numOfPreviousCits + 1;
+  return fnNextNum;
 }
 
 function getFnLinks(tinymceBody){
