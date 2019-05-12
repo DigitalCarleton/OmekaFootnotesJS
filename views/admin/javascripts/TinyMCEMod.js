@@ -64,7 +64,7 @@ params = {
         // Move cursor to bottom of the editor
         tinyMCE.activeEditor.selection.select(tinyMCE.activeEditor.getBody(), true);
         tinyMCE.activeEditor.selection.collapse(false);
-        //updateFootnotes();
+        updateFootnotes();
       }
     });
   editor.addButton('updateFootnotesButton', {
