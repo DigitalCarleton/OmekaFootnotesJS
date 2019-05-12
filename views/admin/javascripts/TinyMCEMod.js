@@ -3,10 +3,12 @@ jQuery(document).ready(function() {
     // Add classes to this menu and put the style declarations in style.css
     // -AM 2/10/17
     Omeka.wysiwyg(params);
+    updateFootnotes();
 });
 
 jQuery(window).load(function() {
     Omeka.wysiwyg(params);
+    updateFootnotes();
 });
 
 params = {
@@ -51,7 +53,7 @@ params = {
         var tinymceBody = getTinyMCEDOMObject();
         addFootnoteLinkClassToFootnoteLinks(tinymceBody);
         updateFootnotes();
-        var fnNextNum = getNumberOfExistingFootnotes(tinymceBody) + 1;
+        var fnNextNum = getNumberOfExistingLinks(tinymceBody) + 1;
         addNewFootnoteLink(editor, fnNextNum);
         var tinymceBody = getTinyMCEDOMObject();
         // Add the new footnote citation
@@ -68,7 +70,12 @@ params = {
   editor.addButton('updateFootnotesButton', {
       text: 'Update Footnotes',
       onclick: function () {
+        var currentTinymceBody = getTinyMCEDOMObject();
+        if(!(currentTinymceBody.getAttribute("data-id").toString().includes("block"))){
+          alert("Click inside the box you are editing before using buttons.");
+        } else{
           updateFootnotes();
+        }
       }
     });
   editor.addButton('deleteFootnotesButton', {
@@ -80,22 +87,21 @@ params = {
             parent = node.parentNode;
             var selectedHTML = editor.selection.getContent({format : 'html'}).toString();
             var idsFootnotesToDelete = getListOfFootnotesToDelete(selectedHTML);
-            var fnLinks = tinymceBody.getElementsByClassName("footnote link");
-            var fnCitations = getExistingFootnoteDiv(tinymceBody).getElementsByClassName('footnote');
-            var listShift = 0; //need this since we're deleting from a list and thus indices will shift
+            var fnLinks = getFnLinks(tinymceBody);
+            var fnCitations = getFnCitations(tinymceBody);
             for(j = 0; j < idsFootnotesToDelete.length; j++){
-              var indexDel = idsFootnotesToDelete[j] - 1;
-              fnLinkToDelete = fnLinks.item(indexDel - listShift);
+              var fnLinkIDs = getFnLinkIDs(fnLinks);
+              var indexDel = fnLinkIDs.indexOf(idsFootnotesToDelete[j]);
+              fnLinkToDelete = fnLinks.item(indexDel);
               fnLinkParent = fnLinkToDelete.parentNode;
               fnLinkParent.removeChild(fnLinkToDelete);
               if(fnCitations.length == 1){
                 tinymceBody.removeChild(getExistingFootnoteDiv(tinymceBody));
               } else {
-                fnCitToDelete = fnCitations.item(indexDel - listShift);
+                fnCitToDelete = fnCitations.item(indexDel);
                 fnCitParent = fnCitToDelete.parentNode;
                 fnCitParent.removeChild(fnCitToDelete);
               }
-              listShift = listShift + 1;
             }
             updateFootnotes();
       }
@@ -124,30 +130,70 @@ function getListOfFootnotesToDelete(selectedHTML){
   return idsFootnotesToDelete;
 }
 
-
 function updateFootnotes(){
-  var tinymceBody = getTinyMCEDOMObject();
-  if(!(tinymceBody.getAttribute("data-id").toString().includes("block"))){
-    alert("Click inside the box you are editing before using buttons.");
+  var bodies = getAllTinyMCETextBodies();
+  for(var i = 0; i < bodies.length; i++){
+    var currentBody = bodies[i];
+    addFootnoteLinkClassToFootnoteLinks(currentBody);
+    var numOfFns = getNumberOfExistingLinks(currentBody);
+    if(numOfFns > 0){
+        // Check formatting of footnote links to make sure they're OK
+        if(getNumberOfFootnoteDivs(currentBody) == 0){
+          addFootnoteDiv(currentBody);
+        } else if (getNumberOfFootnoteDivs(currentBody) > 1){
+          mergeFootnoteDivs(currentBody);
+        }
+        correctFootnoteLinkFormatting(currentBody);
+        var numOfFns = getNumberOfExistingLinks(currentBody);
+        correctFootnoteCitationFormatting(currentBody, numOfFns)
+        numOfFns = getNumberOfExistingLinks(currentBody);
+        correctFootnoteCitationsOrder(currentBody);
+        // correctFootnoteLinksOrder(currentBody);
+        alertUserOfExtraFootnotes(currentBody, numOfFns);
+    }
   }
-  addFootnoteLinkClassToFootnoteLinks(tinymceBody);
-  var numOfFns = getNumberOfExistingFootnotes(tinymceBody);
-  if(numOfFns > 0){
-      // Check formatting of footnote links to make sure they're OK
-      if(getNumberOfFootnoteDivs(tinymceBody) == 0){
-        addFootnoteDiv(tinymceBody);
-      } else if (getNumberOfFootnoteDivs(tinymceBody) > 1){
-        mergeFootnoteDivs(tinymceBody);
+  updateOLsAcrossAllTextEditorBoxes();
+}
+
+function updateOLsAcrossAllTextEditorBoxes(){
+  var bodies = getAllTinyMCETextBodies();
+  var numPrevFns = 0;
+  //For each tinymce-text-body:
+  for(var i = 0; i < bodies.length; i++){
+    var currentBody = bodies[i];
+    // Let orderedList be the ordered list in the tinymce-body
+    var orderedList = getOrderedList(currentBody);
+    if(orderedList!=null){
+      // Update orderedList.start to be (numPrevFns + 1).
+      orderedList.start = numPrevFns + 1;
+      // for each Links[i] of the body, assign it the ID: (i + numPrevFns)
+      var links = getFnLinks(currentBody);
+      for(var j = 0; j < links.length; j++){
+          updateLinkID(links[j], j+numPrevFns+1);
       }
-      var currentLinkIDs = getCurrentLinkIDs(tinymceBody);
-      correctFootnoteLinkFormatting(tinymceBody);
-      var numOfFns = getNumberOfExistingFootnotes(tinymceBody);
-      correctFootnoteCitationFormatting(tinymceBody, numOfFns)
-      numOfFns = getNumberOfExistingFootnotes(tinymceBody);
-      correctFootnoteCitationsOrder(tinymceBody, currentLinkIDs);
-      correctFootnoteLinksOrder(tinymceBody);
-      alertUserOfExtraFootnotes(tinymceBody, numOfFns);
+      // for each citation[i] of the body, assign it the ID: i + numPrevFns
+      var citations = getFnCitations(currentBody);
+      for(var k = 0; k < citations.length; k++){
+          updateCitationID(citations[k], k+numPrevFns+1);
+      }
+      // Increment numPrevFns by the number of footnote citations in the tinymce-body
+      numPrevFns = numPrevFns + getNumberOfExistingCitations(currentBody);
+    }
   }
+}
+
+function getAllTinyMCETextBodies(){
+  var iFrames = document.getElementsByTagName("iframe");
+  var textBodies = [];
+  var j = 0;
+  for(var i = 0; i< iFrames.length; i++){
+    if(iFrames[i].id.indexOf("text_ifr") != -1){
+        var innerDoc = iFrames[i].contentDocument || iFrames[i].contentWindow.document;
+        textBodies[j] = innerDoc.getElementsByClassName("mce-content-body").item(0);
+        j++;
+    }
+  }
+  return textBodies;
 }
 
 function getTinyMCEDOMObject(){
@@ -156,6 +202,15 @@ function getTinyMCEDOMObject(){
     currentNode = currentNode.parentNode;
   }
   return currentNode;
+}
+
+function getOrderedList(tinymceBody){
+  var footnoteDiv = getExistingFootnoteDiv(tinymceBody);
+  if(footnoteDiv==null){
+    return null;
+  }
+  var orderedList = footnoteDiv.getElementsByTagName('ol').item(0);
+  return orderedList;
 }
 
 function addFootnoteLinkClassToFootnoteLinks(tinymceBody){
@@ -169,12 +224,31 @@ function addFootnoteLinkClassToFootnoteLinks(tinymceBody){
     }
 }
 
-function getNumberOfExistingFootnotes(tinymceBody){
+function getNumberOfExistingLinks(tinymceBody){
   return tinymceBody.getElementsByClassName("footnote link").length;
 }
 
 function getNumberOfExistingCitations(tinymceBody){
-  return tinymceBody.getElementsByClassName("footnote").length;
+  // return tinymceBody.getElementsByClassName("footnote").length;
+  var footnoteDiv = getExistingFootnoteDiv(tinymceBody);
+  if(footnoteDiv==null){
+    return null;
+  }
+  var fnCitations = footnoteDiv.getElementsByTagName("li");
+  return fnCitations.length;
+}
+
+function getFnLinks(tinymceBody){
+  return tinymceBody.getElementsByClassName("footnote link");
+}
+
+function getFnCitations(tinymceBody){
+  var footnoteDiv = getExistingFootnoteDiv(tinymceBody);
+  if(footnoteDiv==null){
+    return null;
+  }
+  var fnCitations = footnoteDiv.getElementsByTagName("li");
+  return fnCitations;
 }
 
 function getLinkHTML(fnNextNum){
@@ -278,8 +352,7 @@ function addNewFootnoteLink(editor, fnNextNum){
 
 function addFootnoteCitation(tinymceBody, fnNextNum){
   var newCitation = getNewFootnoteListItem(fnNextNum);
-  var footnoteDiv = getExistingFootnoteDiv(tinymceBody);
-  var orderedList = footnoteDiv.getElementsByTagName('ol').item(0);
+  var orderedList = getOrderedList(tinymceBody);
   if(fnNextNum == 1){
     orderedList.appendChild(newCitation);
   } else {
@@ -291,22 +364,13 @@ function addFootnoteCitation(tinymceBody, fnNextNum){
     //Since it is the largest there are no links connected to any of these citations).
     for(var i = fnNextNum; i < fnCitations.length; i++){
         var citBelowNewCit = fnCitations.item(i);
-        id = parseInt(citBelowNewCit.id.substring(3, ));
+        id = getFnCitationID(citBelowNewCit);
         if (id >= fnNextNum){
-          updateFootnoteCitationID(citBelowNewCit, id+1)
+          updateCitationID(citBelowNewCit, id+1)
         }
     }
   }
 }
-
-function updateFootnoteCitationID(fnCitation, newID){
-  newID = newID.toString();
-  fnCitation.id = "fn:".concat(newID);
-  var hrefLink = fnCitation.getElementsByTagName("a").item(0);
-  hrefLink.setAttribute("href", "#fnref:".concat(newID));
-  hrefLink.setAttribute("data-mce-href", "#fnref:".concat(newID));
-}
-
 
 function addFootnoteDiv(tinymceBody){
   var footnoteDiv = getNewFootnoteDivElement();
@@ -314,7 +378,7 @@ function addFootnoteDiv(tinymceBody){
 }
 
 function getCurrentLinkIDs(tinymceBody){
-  var fnLinks = tinymceBody.getElementsByClassName("footnote link");
+  var fnLinks = getFnLinks(tinymceBody);
   var assignedNums = [];
   for (i = 1; i < fnLinks.length + 1; i++) {
     var fnLink = fnLinks.item(i - 1);
@@ -323,32 +387,32 @@ function getCurrentLinkIDs(tinymceBody){
   return assignedNums;
 }
 
-function correctFootnoteLinksOrder(tinymceBody){
-  var fnLinks = tinymceBody.getElementsByClassName("footnote link");
-  var i = 1;
-  for (i = 1; i < fnLinks.length + 1; i++) {
-    var fnLink = fnLinks.item(i - 1);
-    var correctNum = i.toString();
-    fnLink.id = fnLink.id.substring(0, 6).concat(correctNum);
-    var hrefLink = fnLink.getElementsByTagName("a").item(0);
-    hrefLink.setAttribute("href", hrefLink.getAttribute("href").substring(0, 4).concat(correctNum));
-    hrefLink.textContent = correctNum;
-  }
-}
+// function correctFootnoteLinksOrder(tinymceBody){
+//   var fnLinks = getFnLinks(tinymceBody);
+//   var i = 1;
+//   for (i = 1; i < fnLinks.length + 1; i++) {
+//     var fnLink = fnLinks.item(i - 1);
+//     var correctNum = i.toString();
+//     fnLink.id = fnLink.id.substring(0, 6).concat(correctNum);
+//     var hrefLink = fnLink.getElementsByTagName("a").item(0);
+//     hrefLink.setAttribute("href", hrefLink.getAttribute("href").substring(0, 4).concat(correctNum));
+//     hrefLink.textContent = correctNum;
+//   }
+// }
 
-function correctFootnoteCitationsOrder(tinymceBody, currentLinkIDs){
-  var footnoteDiv = getExistingFootnoteDiv(tinymceBody);
-  var i = 1;
-  var fnCitations = footnoteDiv.getElementsByTagName("li");
-  var citationIDs = getFnCitationIDs(fnCitations);
-  newSortFootnoteCitationsBasedOnIDs(footnoteDiv, fnCitations, currentLinkIDs, citationIDs);
+function correctFootnoteCitationsOrder(tinymceBody){
+  var currentLinkIDs = getCurrentLinkIDs(tinymceBody);
+  newSortFootnoteCitationsBasedOnLinkIDs(tinymceBody, currentLinkIDs);
   assignLinkIDsInIncreasingOrder(tinymceBody);
-  assignFootnoteIDsInIncreasingOrder(fnCitations);
+  assignFootnoteIDsInIncreasingOrder(tinymceBody);
 }
 
-function newSortFootnoteCitationsBasedOnIDs(footnoteDiv, fnCitations, linkIDs, citationIDs){
+function newSortFootnoteCitationsBasedOnLinkIDs(tinymceBody, linkIDs){
+  var footnoteDiv = getExistingFootnoteDiv(tinymceBody);
+  var fnCitations = getFnCitations(tinymceBody);
+  var originalOL = getOrderedList(tinymceBody);
+  var citationIDs = getFnCitationIDs(fnCitations);
   var fnCitationIDMap = getCitationIDMap(fnCitations, citationIDs);
-  var originalOL = footnoteDiv.getElementsByTagName('ol').item(0);
   var newOL = originalOL.cloneNode(false); //an empty clone; has no children
   for(var i = 0; i < linkIDs.length; i++){
     linkID = linkIDs[i];
@@ -424,33 +488,66 @@ function getFnCitationIDs(fnCitations){
   return fnCitationsIDs;
 }
 
+function updateLinkID(fnLink, newID){
+  fnLink.id = "fnref:".concat(newID);
+  var hrefLink = fnLink.getElementsByTagName("a").item(0);
+  hrefLink.setAttribute("href", "#fn:".concat(newID));
+  hrefLink.setAttribute("data-mce-href", "#fn:".concat(newID));
+  hrefLink.textContent = newID.toString();
+}
+
+function updateCitationID(fnCitation, newID){
+  newID = newID.toString();
+  fnCitation.id = "fn:".concat(newID);
+  var hrefLink = fnCitation.getElementsByTagName("a").item(0);
+  hrefLink.setAttribute("href", "#fnref:".concat(newID));
+  hrefLink.setAttribute("data-mce-href", "#fnref:".concat(newID));
+}
+
+function getFnCitationID(fnCitation){
+  return parseInt(fnCitation.id.substring(3, ));
+}
+
+function getFnLinkID(fnLink){
+  return parseInt(fnLink.id.substring(6, ));
+}
+
+function getFnLinkIDs(fnLinks){
+  var linkIDs = [];
+  for(var i = 0; i<fnLinks.length; i++){
+    linkIDs[i] = getFnLinkID(fnLinks[i])
+  }
+  return linkIDs;
+}
+
 function assignLinkIDsInIncreasingOrder(tinymceBody){
-  fnLinks = tinymceBody.getElementsByClassName("footnote link");
+  fnLinks = getFnLinks(tinymceBody);
   var i;
   for (i = 1; i <= fnLinks.length; i++) {
       var fnLink = fnLinks.item(i-1);
-      fnLink.id = "fnref:".concat(i);
-      var hrefLink = fnLink.getElementsByTagName("a").item(0);
-      hrefLink.setAttribute("href", "#fn:".concat(i));
-      hrefLink.setAttribute("data-mce-href", "#fn:".concat(i));
+      updateLinkID(fnLink, i);
   }
 }
 
-function assignFootnoteIDsInIncreasingOrder(fnCitations){
+
+
+function assignFootnoteIDsInIncreasingOrder(tinymceBody){
+  var fnCitations = getFnCitations(tinymceBody);
   for (i = 1; i <= fnCitations.length; i++) {
       var fnCitation = fnCitations.item(i-1);
-      updateFootnoteCitationID(fnCitation, i);
+      updateCitationID(fnCitation, i);
   }
 }
 
+
 function correctFootnoteLinkFormatting(tinymceBody){
-  var fnLinks = tinymceBody.getElementsByClassName("footnote link");
+  var fnLinks = getFnLinks(tinymceBody);
   for (i = 1; i < fnLinks.length + 1; i++) {
     var fnLink = fnLinks.item(i - 1);
     // If the fnLink is just superscript text
     if(isNoLongerALink(fnLink)){
       removeBadLink(fnLink);
-      var fnLinks = tinymceBody.getElementsByClassName("footnote link");
+      var fnLinks = getFnLinks(tinymceBody);
       i = 1;
     }
   }
@@ -458,7 +555,7 @@ function correctFootnoteLinkFormatting(tinymceBody){
     var fnLink = fnLinks.item(i - 1);
     if(hasChildFootnoteLink(fnLink)){
       moveChildLinksOutOfParents(tinymceBody, fnLink, fnLinks, i);
-      var fnLinks = tinymceBody.getElementsByClassName("footnote link");
+      var fnLinks = getFnLinks(tinymceBody);
       i = 1;
     }
   }
@@ -510,7 +607,7 @@ function correctFootnoteCitationFormatting(tinymceBody, numOfFns){
   replaceInnerFootnoteDivIfLost(tinymceBody);
   var footnoteDiv = getExistingFootnoteDiv(tinymceBody);
   fixMultipleOlIfNeeded(footnoteDiv);
-  var fnCitations = footnoteDiv.getElementsByTagName("li");
+  var fnCitations = getFnCitations(tinymceBody);
   var i;
   for (i = 0; i < fnCitations.length; i++) {
     var fnCitation = fnCitations.item(i);
@@ -671,8 +768,7 @@ function createCitationsToMatchNumOfLinks(fnCitations, footnoteDiv, numOfFns){
 }
 
 function alertUserOfExtraFootnotes(tinymceBody, numOfFns){
-  var footnoteDiv = getExistingFootnoteDiv(tinymceBody);
-  var fnCitations = footnoteDiv.getElementsByTagName("li");
+  var fnCitations = getFnCitations(tinymceBody);
   var i;
   for (i = 0; i < fnCitations.length; i++) {
     var fnCitation = fnCitations.item(i);
