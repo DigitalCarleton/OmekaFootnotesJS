@@ -647,6 +647,11 @@ function correctFootnoteCitationFormatting(tinymceBody, numOfFns){
       for(k = linkNodes.length - 1; k >= 0; k = k - 1){
         var linkChild = linkNodes.item(k);
         if(linkChild.getAttribute("href").includes("#fnref:")){
+          //take the non arrow textContent of the link and save it as a textnode
+          var innerLinkText = linkChild.textContent;
+          innerLinkText = innerLinkText.replace('↩','');
+          var linkChildTextNode = document.createTextNode(innerLinkText);
+          paragraphChild.insertBefore(linkChildTextNode, linkChild);
           paragraphChild.removeChild(linkChild);
         }
       }
