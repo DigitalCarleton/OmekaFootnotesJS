@@ -561,7 +561,6 @@ function assignFootnoteIDsInIncreasingOrder(tinymceBody){
   }
 }
 
-
 function correctFootnoteLinkFormatting(tinymceBody){
   var fnLinks = getFnLinks(tinymceBody);
   for (i = 1; i < fnLinks.length + 1; i++) {
@@ -635,11 +634,15 @@ function correctFootnoteCitationFormatting(tinymceBody, numOfFns){
     var fnCitation = fnCitations.item(i);
     var linkNodes = fnCitation.getElementsByTagName("a");
     ensureParagraphElementInCitation(fnCitation);
+
     // If multiple links are on the same line, we eliminate the extras
     var k;
     var paragraphChild = fnCitation.childNodes.item(0);
     var citID = getFnCitationID(fnCitation);
     var citationLinkNodes = [];
+    //for each citation look at the link nodes.
+    // We make sure that there is exactly one #fnref link node by deleting all of them and readding them
+    // This allows there to be other links that will not get deleted as we make these checks
     if(linkNodes.length > 0){
       for(k = linkNodes.length - 1; k >= 0; k = k - 1){
         var linkChild = linkNodes.item(k);
@@ -648,12 +651,18 @@ function correctFootnoteCitationFormatting(tinymceBody, numOfFns){
         }
       }
     }
+    // make sure that the footnote is not just ↩.
+    // Otherwise, when typing, people will be writing within the link
+    var citationText = paragraphChild.textContent.toString();
+    if(citationText == "" || citationText == "↩"){
+      paragraphChild.textContent = "footnote citation here";
+    }
     var newLinkNode = getNewLinkElement(i + 1);
     var fnCitationParagraph = fnCitation.getElementsByTagName("p").item(0);
     fnCitationParagraph.appendChild(newLinkNode);
     // If there is a link, check its text content
   }
-  createCitationsToMatchNumOfLinks(fnCitations, footnoteDiv, numOfFns)
+  createCitationsToMatchNumOfLinks(fnCitations, footnoteDiv, numOfFns);
 }
 
 function replaceInnerFootnoteDivIfLost(tinymceBody){
