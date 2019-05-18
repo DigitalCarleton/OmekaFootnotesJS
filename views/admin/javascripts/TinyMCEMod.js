@@ -551,8 +551,6 @@ function assignLinkIDsInIncreasingOrder(tinymceBody){
   }
 }
 
-
-
 function assignFootnoteIDsInIncreasingOrder(tinymceBody){
   var fnCitations = getFnCitations(tinymceBody);
   for (i = 1; i <= fnCitations.length; i++) {
@@ -658,8 +656,13 @@ function correctFootnoteCitationFormatting(tinymceBody, numOfFns){
     }
     // make sure that the footnote is not just ↩.
     // Otherwise, when typing, people will be writing within the link
-    var citationText = paragraphChild.textContent.toString();
-    if(citationText == "" || citationText == "↩"){
+    var citationText = paragraphChild.textContent;
+    //remove invisible string
+    citationText = citationText.replace(String.fromCharCode(65279), "");
+    //&#65279 is the Unicode Character 'ZERO WIDTH NO-BREAK SPACE'
+    alert(citationText);
+    alert(citationText.length.toString());
+    if(citationText == "" || citationText.length == 0){
       paragraphChild.textContent = "footnote citation here";
     }
     var newLinkNode = getNewLinkElement(i + 1);
