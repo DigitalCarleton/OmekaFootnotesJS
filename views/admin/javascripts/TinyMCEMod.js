@@ -86,6 +86,12 @@ params = {
             node = editor.selection.getNode();
             parent = node.parentNode;
             var selectedHTML = editor.selection.getContent({format : 'html'}).toString();
+            if(selectedHTML.length <= 1){
+              //if the highlighted text is the single number of the footnote, the outerHTML will let us access the whole node.
+              //Note: we can't just use the single number of innerHTML because then any time someone highlights a regular text number,
+              //  the footnote with that number will be deleted
+              selectedHTML = editor.selection.getNode().outerHTML.toString();
+            }
             var idsFootnotesToDelete = getListOfFootnotesToDelete(selectedHTML);
             var fnLinks = getFnLinks(tinymceBody);
             var fnCitations = getFnCitations(tinymceBody);
