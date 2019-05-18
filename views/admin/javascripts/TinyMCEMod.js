@@ -660,8 +660,6 @@ function correctFootnoteCitationFormatting(tinymceBody, numOfFns){
     //remove invisible string
     citationText = citationText.replace(String.fromCharCode(65279), "");
     //&#65279 is the Unicode Character 'ZERO WIDTH NO-BREAK SPACE'
-    alert(citationText);
-    alert(citationText.length.toString());
     if(citationText == "" || citationText.length == 0){
       paragraphChild.textContent = "footnote citation here";
     }
