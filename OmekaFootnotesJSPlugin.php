@@ -1,6 +1,6 @@
 <?php
 
-class TinyMCEModPlugin extends Omeka_Plugin_AbstractPlugin
+class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
 {
     protected $_hooks = array('admin_head');
 
@@ -25,7 +25,7 @@ class TinyMCEModPlugin extends Omeka_Plugin_AbstractPlugin
 
       if($Record == 'Y') {
         // Update existing and newly created text boxes
-        queue_js_file('TinyMCEMod');
+        queue_js_file('OmekaFootnotes');
       }
     }
 
