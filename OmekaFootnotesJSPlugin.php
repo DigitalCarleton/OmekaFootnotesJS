@@ -2,7 +2,10 @@
 
 class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
 {
-    protected $_hooks = array('admin_head');
+    protected $_hooks = array(
+      'admin_head',
+      'public_head'
+    );
 
     /**
      * Queue javascript files when admin section loads
@@ -27,6 +30,10 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
         // Update existing and newly created text boxes
         queue_js_file('OmekaFootnotes');
       }
+    }
+
+    public function hookPublicHead() {
+      queue_js_file('bigfoot')
     }
 
 }
