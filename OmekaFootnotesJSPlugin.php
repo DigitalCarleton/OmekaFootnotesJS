@@ -34,7 +34,7 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
     }
 
     public function hookPublicHead() {
-      queue_js_file('bigfoot')
+      queue_js_file('bigfoot');
     }
 
 }
