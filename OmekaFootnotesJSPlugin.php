@@ -29,12 +29,12 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
       if($Record == 'Y') {
         // Update existing and newly created text boxes
         queue_js_file('OmekaFootnotes');
-        queue_js_file('bigfoot');
       }
     }
 
     public function hookPublicHead() {
       queue_js_file('bigfoot');
+      queue_css_file('bigfoot-default');
     }
 
 }
