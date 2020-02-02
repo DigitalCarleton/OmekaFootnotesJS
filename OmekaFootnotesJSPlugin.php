@@ -33,9 +33,12 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
     }
 
     public function hookPublicHead() {
-      queue_js_file('bigfoot');
-      queue_js_string('$.bigfoot();');
+      
       queue_css_file('bigfoot-default');
+      queue_css_file('bigfoot-number');
+
+      queue_js_file('bigfoot');
+      queue_js_string('var bigfoot = jQuery.bigfoot({activateOnHover:true,deleteOnUnhover:true,});');
 
     }
 
