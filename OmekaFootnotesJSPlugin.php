@@ -22,7 +22,7 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
       //     $Record = 'Y';
       // }
 
-      if(isset($view->exhibit_page)) {
+      if(isset($view->exhibit_page) || isset($view->simple_page)) {
           $Record = 'Y';
       }
 
