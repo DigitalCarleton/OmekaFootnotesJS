@@ -1,4 +1,7 @@
 # OmekaFootnotesJS
+
+## Summary
+
 An Omeka plugin to extend the TinyMCE on exhibit pages and simple pages to include interactive JavaScript footnotes.
 
 This plugin uses Bigfoot.js version 2.1.4
@@ -12,7 +15,7 @@ This plugin uses Bigfoot.js version 2.1.4
 3. Add '*.id' to Allowed HTML Attributes in Omeka security settings and save changes.
 
 
-## Instructions
+## Use Instructions
 
 ### Adding and editing footnotes
 
@@ -43,3 +46,8 @@ This plugin uses Bigfoot.js version 2.1.4
     a. Press the "Update Footnotes" button on the toolbar. This will reorder your footnotes in order of appearance.
 
 ![Update Footnote Image](images/TinyMCEMod_UpdateFootnotes-Edit.png)
+
+
+## Contact
+
+Maintained by Carleton College [Digital Humanities Department](https://www.carleton.edu/digital-humanities/)
