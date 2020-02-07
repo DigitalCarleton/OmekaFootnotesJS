@@ -16,11 +16,6 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
     {
       $Record = "";
       $view = get_view();
-      // Zend_Debug::dump($view);
-
-      // if(isset($view->simple_pages_page)) {
-      //     $Record = 'Y';
-      // }
 
       if(isset($view->exhibit_page) || isset($view->simple_page)) {
           $Record = 'Y';
@@ -32,6 +27,7 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
       }
     }
 
+    
     public function hookPublicHead() {
       
       queue_css_file('bigfoot-default');
