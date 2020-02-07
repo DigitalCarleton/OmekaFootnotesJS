@@ -24,6 +24,8 @@ This plugin uses Bigfoot.js version 2.1.4
    
     c. Refer to (3) to update the order of your footnotes if necessary (in most cases, this should be handled automatically).
 
+![Add Footnote Image](images/TinyMCEMod_AddFootnote-Edit.png)
+
 
 2. If you want to remove a footnote:
    
@@ -33,7 +35,11 @@ This plugin uses Bigfoot.js version 2.1.4
    
     c. Refer to (3) to update the order of your footnotes if necessary (in most cases, this should be handled automatically).
 
+![Delete Footnote Image](images/TinyMCEMod_DeleteFootnotes-Edit.png)
+
 
 3. If your footnotes are out of order:
   
     a. Press the "Update Footnotes" button on the toolbar. This will reorder your footnotes in order of appearance.
+
+![Update Footnote Image](images/TinyMCEMod_UpdateFootnotes-Edit.png)
