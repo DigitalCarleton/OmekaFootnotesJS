@@ -6,6 +6,10 @@ An Omeka plugin to add interactive JavaScript footnotes to exhibit pages and sim
 
 This plugin uses Bigfoot.js version 2.1.4
 
+### Footnotes in action:
+
+![Footnote being activated](images/footnote-in-action.png)
+
 ## Installation
 
 1. Make sure you have ExhibitBuilder and SimplePages installed in your Omeka site
@@ -49,10 +53,6 @@ This plugin uses Bigfoot.js version 2.1.4
 
 ![Update Footnote Image](images/TinyMCEMod_UpdateFootnotes-Edit.png)
 
-
-### Footnotes in action:
-
-![Footnote being activated](images/footnote-in-action.png)
 
 ## License
 
