@@ -14,6 +14,8 @@ This plugin uses Bigfoot.js version 2.1.4
 
 3. Add '*.id' to Allowed HTML Attributes in Omeka security settings and save changes.
 
+![Add *.id to allowed HTML Attributes field](images/security-settings.png)
+
 
 ## Use Instructions
 
@@ -47,6 +49,10 @@ This plugin uses Bigfoot.js version 2.1.4
 
 ![Update Footnote Image](images/TinyMCEMod_UpdateFootnotes-Edit.png)
 
+
+### Footnotes in action:
+
+![Footnote being activated](images/footnote-in-action.png)
 
 ## License
 
