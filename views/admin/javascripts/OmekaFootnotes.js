@@ -1,7 +1,4 @@
 jQuery(document).ready(function() {
-    // This block adds custom styles to the text edit form on exhibit pages.
-    // Add classes to this menu and put the style declarations in style.css
-    // -AM 2/10/17
     Omeka.wysiwyg(params);
     updateFootnotes();
 });
@@ -13,38 +10,9 @@ jQuery(window).load(function() {
 
 params = {
   toolbar: [
-    "bold italic underline | alignleft aligncenter alignright | bullist numlist | link formatselect | styleselect | code ",
+    "bold italic underline | alignleft aligncenter alignright | bullist numlist | link formatselect  | code ",
     "addFootnoteButton | deleteFootnotesButton | updateFootnotesButton | addTranscriptionLinkButton"
 ],
-  style_formats: [{
-      title: 'Highlight1 - gray w/bar',
-      block: 'p',
-      classes: 'medium-block-1'
-    }, {
-      title: 'Highlight2 - white w/bar',
-      block: 'p',
-      classes: 'medium-block-3'
-    }, {
-      title: 'Quote1 - double gray',
-      block: 'p',
-      classes: 'medium-block-2'
-    }, {
-      title: 'Quote2 - single green',
-      block: 'p',
-      classes: 'medium-block-4'
-    }, {
-      title: 'Pull quote',
-      block: 'p',
-      classes: 'pull-quote'
-    }, {
-      title: 'Transcription',
-      block: 'div',
-      classes: 'transcription'
-    // }, {
-    //   title: 'Transcription link',
-    //   selector: 'a',
-    //   classes: 'show-transcription'
-    }],
   setup: function (editor) {
   editor.addButton('addFootnoteButton', {
       text: 'Add Footnote',
