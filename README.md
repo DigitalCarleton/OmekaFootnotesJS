@@ -8,7 +8,7 @@ This plugin uses Bigfoot.js version 2.1.4
 
 ### Footnotes in action:
 
-![Footnote being activated](images/footnote-in-action.png)
+![Footnote being activated](https://github.com/DigitalCarleton/OmekaFootnotesJS/raw/master/images/footnote-in-action.png)
 
 ## Installation
 
@@ -18,7 +18,7 @@ This plugin uses Bigfoot.js version 2.1.4
 
 3. Add '*.id' to Allowed HTML Attributes in Omeka security settings and save changes.
 
-![Add *.id to allowed HTML Attributes field](images/security-settings.png)
+![Add *.id to allowed HTML Attributes field](https://github.com/DigitalCarleton/OmekaFootnotesJS/raw/master/images/security-settings.png)
 
 
 ## Use Instructions
@@ -32,7 +32,7 @@ b. To change the content of the footnote, edit the text snippet at the bottom of
    
 c. Refer to (3) to update the order of your footnotes if necessary (in most cases, this should be handled automatically).
 
-![Add Footnote Image](images/TinyMCEMod_AddFootnote-Edit.png)
+![Add Footnote Image](https://github.com/DigitalCarleton/OmekaFootnotesJS/raw/master/images/TinyMCEMod_AddFootnote-Edit.png)
 
 
 
@@ -44,14 +44,14 @@ b. Press the "Delete Selected Footnotes" button on the toolbar. The footnotes yo
    
 c. Refer to (3) to update the order of your footnotes if necessary (in most cases, this should be handled automatically).
 
-![Delete Footnote Image](images/TinyMCEMod_DeleteFootnotes-Edit.png)
+![Delete Footnote Image](https://github.com/DigitalCarleton/OmekaFootnotesJS/raw/master/images/TinyMCEMod_DeleteFootnotes-Edit.png)
 
 
 ### 3. To reorder footnotes:
   
 a. Press the "Update Footnotes" button on the toolbar. This will reorder your footnotes in order of appearance.
 
-![Update Footnote Image](images/TinyMCEMod_UpdateFootnotes-Edit.png)
+![Update Footnote Image](https://github.com/DigitalCarleton/OmekaFootnotesJS/raw/master/images/TinyMCEMod_UpdateFootnotes-Edit.png)
 
 
 ## License
