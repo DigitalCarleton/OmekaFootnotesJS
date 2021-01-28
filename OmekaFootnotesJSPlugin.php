@@ -17,7 +17,7 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
       $Record = "";
       $view = get_view();
 
-      if(isset($view->exhibit_page) || isset($view->simple_page)) {
+      if(isset($view->exhibit_page) || isset($view->simple_pages_page)) {
           $Record = 'Y';
       }
 
