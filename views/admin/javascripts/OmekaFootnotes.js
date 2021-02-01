@@ -91,12 +91,10 @@ jQuery(document).ready(function() {
 
   Omeka.wysiwyg(params);
   updateFootnotes();
-  jQuery('#simple-pages-use-tiny-mce').click(function() {
-    if (jQuery(this).is(':checked')) {
-      tinyMCE.EditorManager.execCommand('mceAddEditor', true, 'simple-pages-text');
-    } else {
-      tinyMCE.EditorManager.execCommand('mceRemoveEditor', true, 'simple-pages-text');
-    }
+
+  jQuery(document).on('exhibit-builder-refresh-wysiwyg', function () {
+    Omeka.wysiwyg(params);
+    updateFootnotes();
   });
 });
 
