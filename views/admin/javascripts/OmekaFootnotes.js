@@ -1,17 +1,22 @@
 jQuery(document).ready(function() {
+  // added selector variable so simple pages shows footnote buttons when the html editor is activated
+  // if exhibit builder is used, selector is set back to exhibit builder's default value
   var selector;
   if (jQuery('#simple-pages-use-tiny-mce').is(':checked')) {
       selector = '#simple-pages-text';
+  } else if (jQuery('#exhibit-page-form').length) {
+      selector = 'textarea';
   } else {
       selector = false;
   }
+  // added selector parameter to update footnote functionality in simple pages
   params = {
     selector: selector,
     menubar: 'edit view insert format table',
     toolbar: [
       "bold italic underline | alignleft aligncenter alignright | bullist numlist | link formatselect  | code ",
       "addFootnoteButton | deleteFootnotesButton | updateFootnotesButton | addTranscriptionLinkButton"
-  ],
+    ],
     setup: function (editor) {
     editor.addButton('addFootnoteButton', {
         text: 'Add Footnote',
@@ -92,6 +97,7 @@ jQuery(document).ready(function() {
   Omeka.wysiwyg(params);
   updateFootnotes();
 
+  // exhibit builder check to add footnote functionality when a new block is added to a page
   jQuery(document).on('exhibit-builder-refresh-wysiwyg', function () {
     Omeka.wysiwyg(params);
     updateFootnotes();
