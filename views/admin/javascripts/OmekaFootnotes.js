@@ -1,15 +1,15 @@
 jQuery(document).ready(function() {
-  // added selector variable so simple pages shows footnote buttons when the html editor is activated
-  // if exhibit builder is used, selector is set back to exhibit builder's default value
+  // sets selector value based on if simple pages is used
   var selector;
   if (jQuery('#simple-pages-use-tiny-mce').is(':checked')) {
-      selector = '#simple-pages-text';
-  } else if (jQuery('#exhibit-page-form').length) {
-      selector = 'textarea';
+    selector = '#simple-pages-text';
+  } else if (jQuery("body").hasClass("simple-pages") && !jQuery('#simple-pages-use-tiny-mce').is(':checked')) {
+    selector = false;
   } else {
-      selector = false;
+    selector = 'textarea';
   }
-  // added selector parameter to update footnote functionality in simple pages
+
+  // updates TinyMCE WYSIWIG editor to include footnote functionality
   params = {
     selector: selector,
     menubar: 'edit view insert format table',
@@ -97,7 +97,7 @@ jQuery(document).ready(function() {
   Omeka.wysiwyg(params);
   updateFootnotes();
 
-  // exhibit builder check to add footnote functionality when a new block is added to a page
+  // adds footnote functionality to new exhibit builder text blocks
   jQuery(document).on('exhibit-builder-refresh-wysiwyg', function () {
     Omeka.wysiwyg(params);
     updateFootnotes();
