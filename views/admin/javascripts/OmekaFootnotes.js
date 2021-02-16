@@ -42,12 +42,7 @@ jQuery(document).ready(function() {
     editor.addButton('updateFootnotesButton', {
         text: 'Update Footnotes',
         onclick: function () {
-          var currentTinymceBody = getTinyMCEDOMObject();
-          if(!(currentTinymceBody.getAttribute("data-id").toString().includes("block"))){
-            alert("Click inside the box you are editing before using buttons.");
-          } else{
             updateFootnotes();
-          }
         }
       });
     editor.addButton('deleteFootnotesButton', {
@@ -250,7 +245,7 @@ function getLinkHTML(fnNextNum){
   var str4 = fnNextNum.toString();
   var str5 = '">';
   var str6 = fnNextNum.toString();
-  var str7 = '</a></sup>';
+  var str7 = '</a></sup> ';
   var linkHTML = str1.concat(str2).concat(str3).concat(str4).concat(str5).concat(str6).concat(str7);
   return linkHTML;
 }
