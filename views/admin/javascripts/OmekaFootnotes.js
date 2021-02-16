@@ -15,7 +15,7 @@ jQuery(document).ready(function() {
     menubar: 'edit view insert format table',
     toolbar: [
       "bold italic underline | alignleft aligncenter alignright | bullist numlist | link formatselect  | code ",
-      "addFootnoteButton | deleteFootnotesButton | updateFootnotesButton | addTranscriptionLinkButton"
+      "addFootnoteButton | deleteFootnotesButton | updateFootnotesButton"
     ],
     setup: function (editor) {
     editor.addButton('addFootnoteButton', {
@@ -82,14 +82,7 @@ jQuery(document).ready(function() {
                 }
               }
               updateFootnotes();
-        }
-      });
-    editor.addButton('addTranscriptionLinkButton', {
-          text: 'Add Transcription Link',
-          onclick: function () {
-              var tinymceBody = getTinyMCEDOMObject();
-              editor.insertContent("<p><a class='show-transcription' href='#'>Show Transcription</a></p>");
-        }
+          }
       });
     },
   }
