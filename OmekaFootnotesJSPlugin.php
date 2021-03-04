@@ -4,7 +4,8 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
 {
     protected $_hooks = array(
       'admin_head',
-      'public_head'
+      'public_head',
+      // 'admin_footer'
     );
 
     /**
@@ -27,6 +28,21 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
       }
     }
 
+    public function hookAdminFooter()
+    {
+      $Record = "";
+      $view = get_view();
+
+      if(isset($view->exhibit_page) || isset($view->simple_pages_page)) {
+          $Record = 'Y';
+      }
+
+      if($Record == 'Y') {
+        // Update existing and newly created text boxes
+        queue_js_file('OmekaFootnotes');
+      }
+    }
+
     
     public function hookPublicHead() {
       
@@ -34,7 +50,7 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
       queue_css_file('bigfoot-number');
 
       queue_js_file('bigfoot');
-      queue_js_string('var bigfoot = jQuery.bigfoot({activateOnHover:true,deleteOnUnhover:true,});');
+      queue_js_string('var bigfoot = jQuery.bigfoot({activateOnHover:false,deleteOnUnhover:false,});');
 
     }
 

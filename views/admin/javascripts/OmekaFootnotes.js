@@ -1,5 +1,105 @@
 jQuery(document).ready(function() {
-  // sets selector value based on if simple pages is used
+  displayFootnotes();
+});
+
+jQuery(window).load(function() {
+  displayFootnotes();
+});
+
+function displayFootnotes() {
+  var selector;
+  if (jQuery('#simple-pages-use-tiny-mce').is(':checked')) {
+    selector = '#simple-pages-text';
+  } else if (jQuery('#simple-pages-use-tiny-mce').is(":not(:checked)")) {
+    selector = false;
+  } else {
+    selector = 'textarea';
+  }
+  params = {
+    selector: selector,
+    menubar: 'edit view insert format table',
+    toolbar: [
+      "bold italic underline | alignleft aligncenter alignright | bullist numlist | link formatselect  | code ",
+      "addFootnoteButton | deleteFootnotesButton | updateFootnotesButton"
+    ],
+    setup: function (editor) {
+    editor.addButton('addFootnoteButton', {
+        text: 'Add Footnote',
+        onclick: function () {
+          // Add the new footnote link
+          var tinymceBody = getTinyMCEDOMObject();
+          addFootnoteLinkClassToFootnoteLinks(tinymceBody);
+          updateFootnotes();
+          var fnNextNum = getFnNextNum(tinymceBody);
+          addNewFootnoteLink(editor, fnNextNum);
+          var tinymceBody = getTinyMCEDOMObject();
+          // Add the new footnote citation
+          if(getNumberOfFootnoteDivs(tinymceBody) == 0){
+            addFootnoteDiv(tinymceBody);
+          }
+          addFootnoteCitation(tinymceBody, fnNextNum);
+          // Move cursor to bottom of the editor
+          tinyMCE.activeEditor.selection.select(tinyMCE.activeEditor.getBody(), true);
+          tinyMCE.activeEditor.selection.collapse(false);
+          updateFootnotes();
+        }
+      });
+    editor.addButton('updateFootnotesButton', {
+        text: 'Update Footnotes',
+        onclick: function () {
+            updateFootnotes();
+        }
+      });
+    editor.addButton('deleteFootnotesButton', {
+          text: 'Delete Selected Footnotes',
+          onclick: function () {
+              updateFootnotes();
+              var tinymceBody = getTinyMCEDOMObject();
+              node = editor.selection.getNode();
+              parent = node.parentNode;
+              var selectedHTML = editor.selection.getContent({format : 'html'}).toString();
+              if(selectedHTML.length <= 1){
+                //if the highlighted text is the single number of the footnote, the outerHTML will let us access the whole node.
+                //Note: we can't just use the single number of innerHTML because then any time someone highlights a regular text number,
+                //  the footnote with that number will be deleted
+                selectedHTML = editor.selection.getNode().outerHTML.toString();
+              }
+              var idsFootnotesToDelete = getListOfFootnotesToDelete(selectedHTML);
+              var fnLinks = getFnLinks(tinymceBody);
+              var fnCitations = getFnCitations(tinymceBody);
+              for(j = 0; j < idsFootnotesToDelete.length; j++){
+                var fnLinkIDs = getFnLinkIDs(fnLinks);
+                var indexDel = fnLinkIDs.indexOf(idsFootnotesToDelete[j]);
+                fnLinkToDelete = fnLinks.item(indexDel);
+                fnLinkParent = fnLinkToDelete.parentNode;
+                fnLinkParent.removeChild(fnLinkToDelete);
+                if(fnCitations.length == 1){
+                  tinymceBody.removeChild(getExistingFootnoteDiv(tinymceBody));
+                } else {
+                  fnCitToDelete = fnCitations.item(indexDel);
+                  fnCitParent = fnCitToDelete.parentNode;
+                  fnCitParent.removeChild(fnCitToDelete);
+                }
+              }
+              updateFootnotes();
+          }
+      });
+    },
+  }
+  if (typeof tinyMCE != "undefined") {
+    tinyMCE.remove();
+  }
+  Omeka.wysiwyg(params);
+  updateFootnotes();
+
+  // adds footnote functionality to new exhibit builder text blocks
+  jQuery(document).on('exhibit-builder-refresh-wysiwyg', function () {
+    Omeka.wysiwyg(params);
+    updateFootnotes();
+  });
+}
+
+function getSelectorValue() {
   var selector;
   if (jQuery('#simple-pages-use-tiny-mce').is(':checked')) {
     selector = '#simple-pages-text';
@@ -8,7 +108,10 @@ jQuery(document).ready(function() {
   } else {
     selector = 'textarea';
   }
+  return selector;
+}
 
+function setParams(selector) {
   // updates TinyMCE WYSIWIG editor to include footnote functionality
   params = {
     selector: selector,
@@ -81,16 +184,8 @@ jQuery(document).ready(function() {
       });
     },
   }
-
-  Omeka.wysiwyg(params);
-  updateFootnotes();
-
-  // adds footnote functionality to new exhibit builder text blocks
-  jQuery(document).on('exhibit-builder-refresh-wysiwyg', function () {
-    Omeka.wysiwyg(params);
-    updateFootnotes();
-  });
-});
+  return params;
+}
 
 function getListOfFootnotesToDelete(selectedHTML){
   var idsFootnotesToDelete = [];
