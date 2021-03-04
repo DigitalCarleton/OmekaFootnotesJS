@@ -4,8 +4,7 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
 {
     protected $_hooks = array(
       'admin_head',
-      'public_head',
-      // 'admin_footer'
+      'public_head'
     );
 
     /**
@@ -27,22 +26,6 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
         queue_js_file('OmekaFootnotes');
       }
     }
-
-    public function hookAdminFooter()
-    {
-      $Record = "";
-      $view = get_view();
-
-      if(isset($view->exhibit_page) || isset($view->simple_pages_page)) {
-          $Record = 'Y';
-      }
-
-      if($Record == 'Y') {
-        // Update existing and newly created text boxes
-        queue_js_file('OmekaFootnotes');
-      }
-    }
-
     
     public function hookPublicHead() {
       
