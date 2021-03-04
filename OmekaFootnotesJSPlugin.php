@@ -17,7 +17,7 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
       $Record = "";
       $view = get_view();
 
-      if(isset($view->exhibit_page) || isset($view->simple_page)) {
+      if(isset($view->exhibit_page) || isset($view->simple_pages_page)) {
           $Record = 'Y';
       }
 
@@ -26,7 +26,6 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
         queue_js_file('OmekaFootnotes');
       }
     }
-
     
     public function hookPublicHead() {
       
@@ -34,7 +33,7 @@ class OmekaFootnotesJSPlugin extends Omeka_Plugin_AbstractPlugin
       queue_css_file('bigfoot-number');
 
       queue_js_file('bigfoot');
-      queue_js_string('var bigfoot = jQuery.bigfoot({activateOnHover:true,deleteOnUnhover:true,});');
+      queue_js_string('var bigfoot = jQuery.bigfoot({activateOnHover:false,deleteOnUnhover:false,});');
 
     }
 
