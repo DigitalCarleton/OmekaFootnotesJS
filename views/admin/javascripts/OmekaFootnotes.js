@@ -23,7 +23,7 @@ function displayFootnotes() {
       "addFootnoteButton | deleteFootnotesButton | updateFootnotesButton"
     ],
     setup: function (editor) {
-      editor.addButton('addFootnoteButton', {
+      editorui.registry.addButton('addFootnoteButton', {
         text: 'Add Footnote',
         onAction: function () {
           // Add the new footnote link
@@ -44,13 +44,13 @@ function displayFootnotes() {
           updateFootnotes();
         }
       });
-      editor.addButton('updateFootnotesButton', {
+      editor.ui.registry.addButton('updateFootnotesButton', {
         text: 'Update Footnotes',
         onAction: function () {
           updateFootnotes();
         }
       });
-      editor.addButton('deleteFootnotesButton', {
+      editor.ui.registry.addButton('deleteFootnotesButton', {
         text: 'Delete Selected Footnotes',
         onAction: function () {
           updateFootnotes();
