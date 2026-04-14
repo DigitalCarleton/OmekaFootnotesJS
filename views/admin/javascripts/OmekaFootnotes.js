@@ -25,7 +25,7 @@ function displayFootnotes() {
     setup: function (editor) {
       editor.addButton('addFootnoteButton', {
         text: 'Add Footnote',
-        onclick: function () {
+        onAction: function () {
           // Add the new footnote link
           var tinymceBody = getTinyMCEDOMObject();
           addFootnoteLinkClassToFootnoteLinks(tinymceBody);
@@ -46,13 +46,13 @@ function displayFootnotes() {
       });
       editor.addButton('updateFootnotesButton', {
         text: 'Update Footnotes',
-        onclick: function () {
+        onAction: function () {
           updateFootnotes();
         }
       });
       editor.addButton('deleteFootnotesButton', {
         text: 'Delete Selected Footnotes',
-        onclick: function () {
+        onAction: function () {
           updateFootnotes();
           var tinymceBody = getTinyMCEDOMObject();
           node = editor.selection.getNode();
