@@ -23,7 +23,7 @@ function displayFootnotes() {
       "addFootnoteButton | deleteFootnotesButton | updateFootnotesButton"
     ],
     setup: function (editor) {
-      editorui.registry.addButton('addFootnoteButton', {
+      editor.ui.registry.addButton('addFootnoteButton', {
         text: 'Add Footnote',
         onAction: function () {
           // Add the new footnote link
