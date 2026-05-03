@@ -25,6 +25,7 @@ function displayFootnotes() {
     setup: function (editor) {
       editor.ui.registry.addButton('addFootnoteButton', {
         text: 'Add Footnote',
+        tooltip: 'Insert a footnote at the cursor position',
         onAction: function () {
           // Add the new footnote link
           var tinymceBody = getTinyMCEDOMObject();
@@ -46,12 +47,14 @@ function displayFootnotes() {
       });
       editor.ui.registry.addButton('updateFootnotesButton', {
         text: 'Update Footnotes',
+        tooltip: 'Renumber footnotes by order of appearance',
         onAction: function () {
           updateFootnotes();
         }
       });
       editor.ui.registry.addButton('deleteFootnotesButton', {
         text: 'Delete Selected Footnotes',
+        tooltip: 'Select footnote(s) to delete them',
         onAction: function () {
           updateFootnotes();
           var tinymceBody = getTinyMCEDOMObject();
