@@ -47,7 +47,7 @@ function displayFootnotes() {
       });
       editor.ui.registry.addButton('updateFootnotesButton', {
         text: 'Update Footnotes',
-        tooltip: 'Renumber footnotes by order of appearance',
+        tooltip: 'Renumber after rearranging order of footnotes',
         onAction: function () {
           updateFootnotes();
         }
